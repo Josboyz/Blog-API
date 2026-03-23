@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Blog API</title>
+  <style>
+    body { font-family: Arial; margin: 20px; }
+    input, textarea { width: 100%; padding: 5px; margin: 5px 0; }
+    button { padding: 8px 15px; background: #007bff; color: white; border: none; cursor: pointer; }
+    button:hover { background: #0056b3; }
+    .article { border: 1px solid #ddd; padding: 10px; margin: 10px 0; }
+  </style>
+</head>
+<body>
+  <h1>Blog Simple</h1>
+
+  <h2>Creer un article</h2>
+  <input type="text" id="titre" placeholder="Titre">
+  <textarea id="contenu" placeholder="Contenu"></textarea>
+  <input type="text" id="auteur" placeholder="Auteur">
+  <input type="text" id="categorie" placeholder="Categorie">
+  <button onclick="createArticle()">Creer</button>
+
+  <h2>Articles</h2>
+  <div id="articles"></div>
+
+  <script>
+    function createArticle() {
+      const titre = document.getElementById('titre').value;
+      const contenu = document.getElementById('contenu').value;
+      const auteur = document.getElementById('auteur').value;
+      const categorie = document.getElementById('categorie').value;
+      const date = new Date().toISOString().split('T')[0];
+
+      const article = {
+        titre, contenu, auteur, date, categorie, tags: []
+      };
+
+      fetch('/api/articles', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(article)
+      })
+      .then(res => res.json())
+      .then(data => {
+        console.log('Article cree:', data);
+        loadArticles();
+        clearForm();
+      })
+      .catch(err => console.error(err));
+    }
+
+    function loadArticles() {
+      fetch('/api/articles')
+      .then(res => res.json())
+      .then(articles => {
+        const div = document.getElementById('articles');
+        div.innerHTML = '';
+        articles.forEach(a => {
+          div.innerHTML += `
+            <div class="article">
+              <h3>${a.titre}</h3>
+              <p>${a.contenu}</p>
+              <small>Par ${a.auteur} - ${a.categorie}</small>
+              <br>
+              <button onclick="deleteArticle(${a.id})">Supprimer</button>
+            </div>
+          `;
+        });
+      })
+      .catch(err => console.error(err));
+    }
+
+    function deleteArticle(id) {
+      fetch(`/api/articles/${id}`, { method: 'DELETE' })
+      .then(res => res.json())
+      .then(() => loadArticles())
+      .catch(err => console.error(err));
+    }
+
+    function clearForm() {
+      document.getElementById('titre').value = '';
+      document.getElementById('contenu').value = '';
+      document.getElementById('auteur').value = '';
+      document.getElementById('categorie').value = '';
+    }
+
+    loadArticles();
+  </script>
+</body>
+</html>

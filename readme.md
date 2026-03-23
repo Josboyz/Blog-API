@@ -5,8 +5,8 @@ API backend simple pour un blog avec articles CRUD.
 ## Cloner le projet
 
 ```bash
-git clone https://github.com/<votre-utilisateur>/<nom-du-repo>.git
-cd <nom-du-repo>
+git clone https://github.com/Josboyz/Blog-API.git
+cd Blog-API
 ```
 
 ## Installation
@@ -102,13 +102,14 @@ Swagger UI disponible sur : `http://localhost:3000/api-docs`
 src/
   app.js              - Application principale
   db.js               - Connexion base de données
-  swagger.js          - Configuration Swagger
   controllers/
     article_controller.js
   models/
     article_model.js
   routes/
     articles.js
-index.html          - Interface web
-package.json        - Dépendances
+swagger/
+  swagger.js          - Configuration Swagger
+index.html            - Interface web
+package.json          - Dépendances
 ```
